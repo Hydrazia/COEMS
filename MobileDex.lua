@@ -1012,6 +1012,10 @@ local function main()
 			context:AddRegistered("LOAD_ANIMATION")
 			context:AddRegistered("STOP_ANIMATION")
 		end
+
+                if presentClasses["Tool"] then
+                        context:AddRegistered("USE_TOOL")
+		end
 		
 		if presentClasses["TouchTransmitter"] then context:AddRegistered("FIRE_TOUCHTRANSMITTER", firetouchinterest == nil) end
 		if presentClasses["ClickDetector"] then context:AddRegistered("FIRE_CLICKDETECTOR", fireclickdetector == nil) end
@@ -1271,6 +1275,17 @@ local function main()
 				end
 			end
 		end})
+
+context:Register("USE_TOOL", {
+    Name = "Use Tool",
+    IconMap = Explorer.MiscIcons,
+    Icon = "Play",
+    OnClick = function(node)
+        if node.Obj:IsA("Tool") then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(node.Obj)
+        end
+    end
+})
 		
 		local OldAnimation
 		context:Register("PLAY_TWEEN",{Name = "Play Tween", IconMap = Explorer.MiscIcons, Icon = "Play", OnClick = function()
