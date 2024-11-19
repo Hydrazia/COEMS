@@ -1281,8 +1281,14 @@ context:Register("USE_TOOL", {
     IconMap = Explorer.MiscIcons,
     Icon = "Play",
     OnClick = function(node)
-        if node.Obj:IsA("Tool") then
-            game.Players.LocalPlayer.Character.Humanoid:EquipTool(node.Obj)
+	local sList = selection.List
+			
+	for i = 1, #sList do
+	local node = sList[i]
+	local Obj = node.Obj
+        if node:IsA("Tool") then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(node)
+       	end
         end
     end
 })
