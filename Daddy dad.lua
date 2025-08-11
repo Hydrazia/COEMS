@@ -34,7 +34,7 @@ local Module = function()
         end,
 
         Kick = function()
-            game:GetService("Players").LocalPlayer:kick()
+            game:GetService("Players").LocalPlayer:Kick()
         end,
 
         Destroy = function()
