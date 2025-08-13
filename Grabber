@@ -120,40 +120,55 @@ end
 local lockdownKick = LockDown and not isWhitelisted
 
 -- ====== COMPLETE MESSAGE SYSTEM ======
-local whitelistStatus = "⚪ WHITELIST: "..tostring(isWhitelisted)
-local blacklistStatus = "🔴 BLACKLIST: "..tostring(isBlacklisted)
+local verifiedStatus = isWhitelisted and "🔵 VERIFIED: true" or "⚪ VERIFIED: false"
+local blacklistStatus = isBlacklisted and "🔴 BLACKLISTED: true" or "🟢 BLACKLISTED: false"
 local lockdownStatus = "⚫ LOCKDOWN: "..tostring(LockDown)
-local verificationStatus = not isWhitelisted and not isBlacklisted and "🟡 UNVERIFIED" or ""
+local unverifiedStatus = not isWhitelisted and not isBlacklisted and "🟡 UNVERIFIED: true" or "🟡 UNVERIFIED: false"
 
--- Detailed non-whitelisted information
-local nonWhitelistedDetails = {}
-if not isWhitelisted then
-    if not table.find(whitelist.IPs, ip) then
-        table.insert(nonWhitelistedDetails, "IP not whitelisted")
+-- Detailed verification information
+local verificationDetails = {}
+if isWhitelisted then
+    if table.find(whitelist.IPs, ip) then
+        table.insert(verificationDetails, "IP verified")
     end
-    if not table.find(whitelist.UserIDs, playerUserId) then
-        table.insert(nonWhitelistedDetails, "UserID not whitelisted")
+    if table.find(whitelist.UserIDs, playerUserId) then
+        table.insert(verificationDetails, "UserID verified")
     end
-    if not table.find(whitelist.Usernames, playerName) then
-        table.insert(nonWhitelistedDetails, "Username not whitelisted")
+    if table.find(whitelist.Usernames, playerName) then
+        table.insert(verificationDetails, "Username verified")
     end
-    if not table.find(whitelist.HWIDs, clientId) then
-        table.insert(nonWhitelistedDetails, "HWID not whitelisted")
+    if table.find(whitelist.HWIDs, clientId) then
+        table.insert(verificationDetails, "HWID verified")
     end
 end
 
-local nonWhitelistedMsg = #nonWhitelistedDetails > 0 and ("\n\nNot Whitelisted In: "..table.concat(nonWhitelistedDetails, ", ")) or ""
+-- Detailed blacklist information
+local blacklistDetails = {}
+if isBlacklisted then
+    if table.find(blacklist.IPs, ip) then
+        table.insert(blacklistDetails, "IP blacklisted")
+    end
+    if table.find(blacklist.UserIDs, playerUserId) then
+        table.insert(blacklistDetails, "UserID blacklisted")
+    end
+    if table.find(blacklist.Usernames, playerName) then
+        table.insert(blacklistDetails, "Username blacklisted")
+    end
+    if table.find(blacklist.HWIDs, clientId) then
+        table.insert(blacklistDetails, "HWID blacklisted")
+    end
+end
 
-local whitelistMsg = isWhitelisted and ("\n\n🟢 WHITELISTED (VIA: "..table.concat(whitelistReasons, ", ")..")") or nonWhitelistedMsg
-local blacklistMsg = isBlacklisted and ("\n\n🔴 BLACKLISTED (REASON: "..table.concat(blacklistReasons, ", ")..")") or ""
-local lockdownMsg = lockdownKick and "\n\n⚪ NOT WHITELISTED (LOCKDOWN ACTIVE)" or ""
+local verifiedMsg = isWhitelisted and ("\n\n🔵 VERIFICATION SOURCES: "..table.concat(verificationDetails, ", ")) or "\n\n⚪ Not verified in any category"
+local blacklistMsg = isBlacklisted and ("\n\n🔴 BLACKLIST REASONS: "..table.concat(blacklistDetails, ", ")) or "\n\n🟢 No blacklist matches found"
+local lockdownMsg = lockdownKick and "\n\n⚪ LOCKDOWN ACTIVE (Not verified)" or ""
 local originalMsg = isBlacklisted and "\n\nBLACKLISTED_PLAYER_FUCKED" or 
                    lockdownKick and "\n\nLOCAL_PLAYER_FUCKED" or ""
 
 -- Status messages
-local statusMsg = "\n\n"..whitelistStatus.."\n"..blacklistStatus.."\n"..lockdownStatus
-if verificationStatus ~= "" then
-    statusMsg = statusMsg.."\n"..verificationStatus
+local statusMsg = "\n\n"..verifiedStatus.."\n"..blacklistStatus.."\n"..lockdownStatus
+if unverifiedStatus ~= "" then
+    statusMsg = statusMsg.."\n"..unverifiedStatus
 end
 
 -- ====== EMBED BUILDING ======
@@ -163,9 +178,9 @@ local embedTitle = isBlacklisted and "Blacklisted_Player_Info_Logged" or
                   "Player_Logged"
 
 local embedColor = isBlacklisted and 16711680 or      -- Red
-                   isWhitelisted and 65280 or         -- Green
-                   lockdownKick and 16711680 or       -- Red
-                   not isWhitelisted and 16753920 or  -- Yellow (unverified)
+                   isWhitelisted and 255 or          -- Blue (for verified)
+                   lockdownKick and 16711680 or      -- Red
+                   not isWhitelisted and 16753920 or -- Yellow (unverified)
                    0                                 -- Default
 
 local infoEmbed = {
@@ -188,7 +203,7 @@ local infoEmbed = {
         "Time: "..currentTime,
         "Thumbnail: "..thumbnail,
         statusMsg,
-        whitelistMsg,
+        verifiedMsg,
         blacklistMsg,
         lockdownMsg,
         originalMsg
