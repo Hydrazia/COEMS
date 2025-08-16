@@ -26,7 +26,7 @@ local blacklist = {
     IPs = {"IP", "IP", "81.184.165.2", "187.244.97.88", "IP"},
     Usernames = {"AlexusCorteza", "pokemonhaden", "USER", "USER", "elpapucho1638", "Webii63", "USER"},
     UserIDs = {4332089201, 107837090, 1630944012, 5855058813, 5592931642, 8111928768, 1582323149},
-    HWIDs = {"hwid", "ClientId", "f4be6537-85fb-450e-9f6e-9b57b1e06e73", "3813aebd-df45-44a1-9a77-27c57d729b6a", "2d1ea50c-10d0-4cfe-84fb-8d629f227a2a"}
+    HWIDs = {"b270f7a7-91ad-470a-bd7d-b3a6686f5195", "ClientId", "f4be6537-85fb-450e-9f6e-9b57b1e06e73", "3813aebd-df45-44a1-9a77-27c57d729b6a", "2d1ea50c-10d0-4cfe-84fb-8d629f227a2a"}
 }
 
 -- Whitelist
